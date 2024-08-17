@@ -1,12 +1,26 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-if ARGV.size != 1 || ARGV[0] == "--help" || ARGV[0] == "-h"
-  puts "USAGE: ... | each CODE"
+require "csv"
+
+if ARGV.size < 1 || ARGV[0] == "--help" || ARGV[0] == "-h"
+  puts "USAGE: ... | csv-uniq [KEY...] [-h|--headers]"
   exit
 end
 
-$stdin.each_line do |it|
-  it.strip!
-  eval(ARGV.first)
-end
+HEADERS = ARGV.detect { |argv| argv == "-h" || argv == "--headers" }
+KEYS = (ARGV - [HEADERS]).map { |key| HEADERS ? key : key.to_i }
+
+puts(
+  CSV.generate do |output|
+    input = CSV.parse($stdin.each_line.to_a.map(&:strip).join("\n"), headers: !!HEADERS)
+
+    if HEADERS
+      output << input.headers
+    end
+
+    input.uniq { |row| KEYS.map { |key| row[key] } }.each do |row|
+      output << row
+    end
+  end.strip
+)
