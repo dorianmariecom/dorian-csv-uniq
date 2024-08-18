@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = "dorian-csv-uniq"
-  s.version = "0.1.0"
+  s.version = "0.1.1"
   s.summary = "returns a csv by unique keys, can be index or name"
   s.description = s.summary
   s.authors = ["Dorian Marié"]

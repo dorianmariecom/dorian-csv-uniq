@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    dorian-csv-uniq (0.1.0)
+    dorian-csv-uniq (0.1.1)
       csv
 
 GEM
