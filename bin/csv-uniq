@@ -2,29 +2,63 @@
 # frozen_string_literal: true
 
 require "csv"
+require "dorian/arguments"
 
-if ARGV.size < 1 || ARGV[0] == "--help" || ARGV[0] == "-h"
-  puts "USAGE: ... | csv-uniq [KEY...] [-h|--headers]"
-  exit
+parsed =
+  Dorian::Arguments.parse(
+    headers: :boolean,
+    print_headers: {
+      alias: :p
+    },
+    version: {
+      alias: :v
+    },
+    help: {
+      alias: :h
+    }
+  )
+
+abort parsed.help if parsed.options.help
+
+if parsed.options.version
+  abort File.read(File.expand_path("../../VERSION", __FILE__))
 end
 
-HEADERS = ARGV.detect { |argv| argv == "-h" || argv == "--headers" }
-KEYS = (ARGV - [HEADERS]).map { |key| HEADERS ? key : key.to_i }
+keys = parsed.arguments
+keys = nil if keys.empty?
+inputs = parsed.files.map { |file| File.read(file) }
+inputs = [$stdin.each_line.to_a.map(&:strip).join("\n")] if inputs.empty?
+headers = parsed.options.headers || parsed.options.print_headers
+headers ||= keys&.any? { |key| key.to_i.to_s != key }
 
 puts(
-  CSV
-    .generate do |output|
-      input =
-        CSV.parse(
-          $stdin.each_line.to_a.map(&:strip).join("\n"),
-          headers: !!HEADERS
-        )
+  CSV.generate do |output|
+    rows = inputs.map.with_index do |input, index|
+      input = CSV.parse(input, headers:)
 
-      output << input.headers if HEADERS
+      if parsed.options.print_headers && index.zero?
+        output << (keys || input.headers).map do |key|
+          if input.headers.include?(key)
+            key
+          elsif key.to_i.to_s == key
+            input.headers[key.to_i]
+          else
+            key
+          end
+        end
+      end
 
-      input
-        .uniq { |row| KEYS.map { |key| row[key] } }
-        .each { |row| output << row }
+      input.map do |row|
+        (
+          keys ||
+          (headers && input.headers) ||
+          (0...input.first.size)
+        ).map do |key|
+          row[key.to_i.to_s == key ? key.to_i : key]
+        end
+      end
     end
-    .strip
+
+    rows.flatten(1).uniq.each { |row| output << row }
+  end
 )
