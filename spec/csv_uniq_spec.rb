@@ -18,4 +18,20 @@ RSpec.describe "csv-pluck" do
       a,2
     CSV
   end
+
+  it "works with headers" do
+    csv = Tempfile.create
+    File.write(csv, <<~CSV)
+      key,value
+      a,1
+      b,2
+      a,1
+      a,2
+    CSV
+    expect(`bin/csv-uniq --headers -p key #{csv.path}`).to eq(<<~CSV)
+      key,value
+      a,1
+      b,2
+    CSV
+  end
 end

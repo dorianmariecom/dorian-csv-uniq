@@ -38,18 +38,10 @@ puts(
         input = CSV.parse(input, headers:)
 
         if parsed.options.print_headers && index.zero?
-          output << (keys || input.headers).map do |key|
-            if input.headers.include?(key)
-              key
-            elsif key.to_i.to_s == key
-              input.headers[key.to_i]
-            else
-              key
-            end
-          end
+          output << input.headers
         end
 
-        input.map do |row|
+        input.uniq do |row|
           (
             keys || (headers && input.headers) || (0...input.first.size)
           ).map { |key| row[key.to_i.to_s == key ? key.to_i : key] }
