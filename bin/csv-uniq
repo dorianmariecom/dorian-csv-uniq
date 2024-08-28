@@ -37,9 +37,7 @@ puts(
       inputs.map.with_index do |input, index|
         input = CSV.parse(input, headers:)
 
-        if parsed.options.print_headers && index.zero?
-          output << input.headers
-        end
+        output << input.headers if parsed.options.print_headers && index.zero?
 
         input.uniq do |row|
           (
