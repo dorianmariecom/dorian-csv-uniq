@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    dorian-csv-uniq (1.0.0)
+    dorian-csv-uniq (1.1.0)
       csv
       dorian-arguments
 
