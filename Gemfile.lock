@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    dorian-csv-uniq (1.1.0)
+    dorian-csv-uniq (1.1.1)
       csv
       dorian-arguments
 
@@ -29,7 +29,7 @@ GEM
     connection_pool (2.4.1)
     csv (3.3.0)
     diff-lcs (1.5.1)
-    dorian-arguments (1.2.0)
+    dorian-arguments (1.1.0)
       bigdecimal
     drb (2.2.1)
     i18n (1.14.5)
@@ -115,7 +115,7 @@ DEPENDENCIES
   rubocop-rspec_rails
 
 RUBY VERSION
-   ruby 3.3.4p94
+   ruby 3.3.5p100
 
 BUNDLED WITH
    2.5.18
