@@ -1,28 +1,41 @@
-# `dorian-each`
+# `dorian-csv-uniq`
 
-Evaluates some code on each line of the input
+Deduplicate CSV rows, optionally by selected keys.
 
-e.g. `ls -l | each "puts l.split.first"`
-
-### Install
+## Install
 
 ```bash
-gem install dorian-each
+gem install dorian-csv-uniq
 ```
 
-Or as part of my other gems:
+Also included in the aggregate gem:
 
 ```bash
 gem install dorian
 ```
 
-### Usage
-
-From my history:
+## Usage
 
 ```bash
-pbpaste | each "puts line.split('-')[1].split.first" | uniq
-git grep Thing test/ | grep isocode | each "puts l.split(':').first" | sort | uniq | xvim
-cat file.csv | each "code, name = l.split(\"\\t\"); if code.include?(','); puts code; else; puts code.gsub(' ', '') + ',' + name; end"
-git grep thing | grep " doc " | each "puts l.split(':').first" | xvim
+csv-uniq [options] [key ...] [file ...]
+```
+
+Run `csv-uniq -h` for generated option details and `csv-uniq -v` for the installed version.
+
+## Notes
+
+- Without keys it deduplicates whole rows. With `--headers`, keys can be header names.
+
+## Examples
+
+### Deduplicate rows
+
+```bash
+printf 'a,1\nb,2\na,1\n' | csv-uniq
+```
+
+### Deduplicate by a header
+
+```bash
+csv-uniq --headers -p key input.csv
 ```
