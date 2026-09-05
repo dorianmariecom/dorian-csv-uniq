@@ -2,8 +2,8 @@ PATH
   remote: .
   specs:
     dorian-csv-uniq (2.0.1)
-      csv
-      dorian-arguments
+      csv (>= 3.3.6, < 4)
+      dorian-arguments (>= 2.0.1, < 3)
 
 GEM
   remote: https://rubygems.org/
